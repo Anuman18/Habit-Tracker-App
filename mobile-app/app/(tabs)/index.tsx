@@ -1,19 +1,13 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Habit } from '../../src/types/habit';
-import { loadHabits } from '../../src/services/habitStorage';
+import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { Link } from 'expo-router';
-import { Button } from 'react-native';
-import { TouchableOpacity } from 'react-native';
-import { toggleHabitCompletion } from '../../src/services/habitStorage';
 
+import { Habit } from '../../src/types/habit';
+import { loadHabits, toggleHabitCompletion } from '../../src/services/habitStorage';
+import { calculateStreak } from '../../src/utils/streak';
 
 export default function HomeScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
-
-  <Link href="/add" asChild>
-  <Button title="Add Habit" />
-</Link>
 
   useEffect(() => {
     const fetchHabits = async () => {
@@ -28,33 +22,39 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Your Habits</Text>
 
+      {/* ➕ Add Habit Button */}
+      <Link href="/add" asChild>
+        <Button title="Add Habit" />
+      </Link>
+
+      {/* 📋 Habit List */}
       {habits.length === 0 ? (
-        <Text>No habits yet 🚀</Text>
+        <Text style={styles.empty}>No habits yet 🚀</Text>
       ) : (
         habits.map((habit) => {
-  const today = new Date().toISOString().split('T')[0];
-  const completed = habit.completedDates.includes(today);
+          const today = new Date().toISOString().split('T')[0];
+          const completed = habit.completedDates.includes(today);
 
-  return (
-    <TouchableOpacity
-      key={habit.id}
-      onPress={async () => {
-        const updated = await toggleHabitCompletion(habit.id);
-        setHabits(updated);
-      }}
-      style={{
-        padding: 12,
-        marginBottom: 10,
-        backgroundColor: completed ? '#4CAF50' : '#eee',
-        borderRadius: 8,
-      }}
-    >
-      <Text style={{ color: completed ? '#fff' : '#000' }}>
-        {habit.title}
-      </Text>
-    </TouchableOpacity>
-  );
-})
+          const streak = calculateStreak(habit.completedDates);
+
+          return (
+            <TouchableOpacity
+              key={habit.id}
+              onPress={async () => {
+                const updated = await toggleHabitCompletion(habit.id);
+                setHabits(updated);
+              }}
+              style={[
+                styles.habitItem,
+                { backgroundColor: completed ? '#4CAF50' : '#eee' },
+              ]}
+            >
+              <Text style={{ color: completed ? '#fff' : '#000' }}>
+                {habit.title} 🔥 {streak}
+              </Text>
+            </TouchableOpacity>
+          );
+        })
       )}
     </View>
   );
@@ -69,6 +69,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  empty: {
+    marginTop: 20,
+    fontSize: 16,
+  },
+  habitItem: {
+    padding: 12,
+    marginTop: 10,
+    borderRadius: 8,
   },
 });
