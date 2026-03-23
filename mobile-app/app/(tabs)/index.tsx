@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Habit } from '../src/types/habit.ts';
-import { loadHabits } from '../src/services/habitStorage';
+import { Habit } from '../../src/types/habit';
+import { loadHabits } from '../../src/services/habitStorage';
 
 export default function HomeScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
