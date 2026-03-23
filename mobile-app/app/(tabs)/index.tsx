@@ -2,9 +2,16 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Habit } from '../../src/types/habit';
 import { loadHabits } from '../../src/services/habitStorage';
+import { Link } from 'expo-router';
+import { Button } from 'react-native';
+
 
 export default function HomeScreen() {
   const [habits, setHabits] = useState<Habit[]>([]);
+
+  <Link href="/add" asChild>
+  <Button title="Add Habit" />
+</Link>
 
   useEffect(() => {
     const fetchHabits = async () => {
