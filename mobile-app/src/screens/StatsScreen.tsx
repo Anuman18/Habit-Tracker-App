@@ -23,8 +23,9 @@ export default function StatsScreen() {
   );
 
   const completionRate =
-    totalHabits === 0 ? 0 : (totalCompletions / totalHabits).toFixed(1);
-
+  totalHabits === 0
+    ? 0
+    : Number((totalCompletions / totalHabits).toFixed(1));
   return (
     <View style={styles.container}>
       <Text style={styles.title}>📊 Your Stats</Text>
