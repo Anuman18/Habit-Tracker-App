@@ -4,6 +4,8 @@ import { Habit } from '../../src/types/habit';
 import { loadHabits } from '../../src/services/habitStorage';
 import { Link } from 'expo-router';
 import { Button } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { toggleHabitCompletion } from '../../src/services/habitStorage';
 
 
 export default function HomeScreen() {
@@ -29,9 +31,30 @@ export default function HomeScreen() {
       {habits.length === 0 ? (
         <Text>No habits yet 🚀</Text>
       ) : (
-        habits.map((habit) => (
-          <Text key={habit.id}>{habit.title}</Text>
-        ))
+        habits.map((habit) => {
+  const today = new Date().toISOString().split('T')[0];
+  const completed = habit.completedDates.includes(today);
+
+  return (
+    <TouchableOpacity
+      key={habit.id}
+      onPress={async () => {
+        const updated = await toggleHabitCompletion(habit.id);
+        setHabits(updated);
+      }}
+      style={{
+        padding: 12,
+        marginBottom: 10,
+        backgroundColor: completed ? '#4CAF50' : '#eee',
+        borderRadius: 8,
+      }}
+    >
+      <Text style={{ color: completed ? '#fff' : '#000' }}>
+        {habit.title}
+      </Text>
+    </TouchableOpacity>
+  );
+})
       )}
     </View>
   );
