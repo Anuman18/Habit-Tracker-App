@@ -20,3 +20,26 @@ export const loadHabits = async (): Promise<Habit[]> => {
     return [];
   }
 };
+
+export const toggleHabitCompletion = async (habitId: string) => {
+  const habits = await loadHabits();
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const updatedHabits = habits.map((habit) => {
+    if (habit.id === habitId) {
+      const alreadyCompleted = habit.completedDates.includes(today);
+
+      return {
+        ...habit,
+        completedDates: alreadyCompleted
+          ? habit.completedDates.filter((date) => date !== today)
+          : [...habit.completedDates, today],
+      };
+    }
+    return habit;
+  });
+
+  await saveHabits(updatedHabits);
+  return updatedHabits;
+};
