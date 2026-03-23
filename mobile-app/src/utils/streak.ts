@@ -1,3 +1,6 @@
+import StatsScreen from '../../src/screens/StatsScreen';
+
+
 export const calculateStreak = (dates: string[]): number => {
   if (dates.length === 0) return 0;
 
@@ -19,3 +22,6 @@ export const calculateStreak = (dates: string[]): number => {
 
   return streak;
 };
+
+
+export default StatsScreen;
